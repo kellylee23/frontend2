@@ -57,9 +57,6 @@ const Question = styled.div`
 
 const Title = styled.div`
   width: 100%;
-  text-align: center;
-  font-family: "Noto Sans KR";
-  font-size: 20px;
   font-weight: 500;
   text-align: center;
   font-family: "Noto Sans";
