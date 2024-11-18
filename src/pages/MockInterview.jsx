@@ -1,38 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { FaChevronLeft } from "react-icons/fa";
+import { Container } from '../components/PageLayout';
+import { Header } from '../components/Header';
 import QuestionIcon from "../img/hugeicons_question.png"
 import Technical from "../img/Development Skill.png"
 import Common from "../img/Management.png"
 import Intergrated from "../img/Workspace.png"
 
-const Container = styled.div`
-  width: 391px;
-  min-height: 100vh;
-  margin: 0 auto;
-  background: white;
-  display: flex;
-  flex-direction: column;
-`
-const Header = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px 20px;
-  position: relative;
-`
-
-const BackButton = styled.button`
-  position: absolute;
-  left: 20px;
-  background: none;
-  border: none;
-  font-size: 20px;
-  display: flex;
-  align-items: center;
-  z-index: 1;
-`
 const QuestionContainer = styled.div`
   width: 100%;
   display: flex;
@@ -49,20 +24,13 @@ const Question = styled.div`
   font-size: 16px;
   font-weight: 600;
   margin: 30px 0px;
-  .png{
+  img {
     width: 45px;
     height: 45px;
+    margin-right: 8px;
   }
 `
 
-const Title = styled.div`
-  width: 100%;
-  font-weight: 500;
-  text-align: center;
-  font-family: "Noto Sans";
-  font-size: 20px;
-  font-weight: 600;
-`
 const OptionTitle = styled.div`
   color: #3A00F9;
   text-align: center;
@@ -71,12 +39,14 @@ const OptionTitle = styled.div`
   font-weight: 700;
   margin: 20px 0;
 `
+
 const Contents = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
 `
+
 const OptionContainer = styled.div`
   width: 297px;
   height: 417px;
@@ -87,6 +57,7 @@ const OptionContainer = styled.div`
   align-items: center;
   justify-content: space-evenly;
 `
+
 const Option = styled.div`
   width: 230px;
   height: 55px;
@@ -94,12 +65,13 @@ const Option = styled.div`
   flex-direction: row;
   align-items: center;
   gap: 12px;
-  .png{
+  img {
     width: 45px;
     height: 45px;
   }
 `
-const Optiontext= styled.div`
+
+const OptionText = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -110,7 +82,7 @@ const Optiontext= styled.div`
   font-weight: 500;
 `
 
-const OptionBtn = styled.button`
+const InterviewButton = styled.button`
   width: 158px;
   height: 33px;
   border-radius: 30px;
@@ -127,6 +99,46 @@ const OptionBtn = styled.button`
   }
 `
 
+const interviewOptions = [
+  {
+    id: 'technical',
+    image: Technical,
+    alt: 'technical',
+    description: '전문 지식과 기술 능력평가',
+    buttonText: '기술 면접 진행하기',
+    path: '/interview/technical'
+  },
+  {
+    id: 'common',
+    image: Common,
+    alt: 'common',
+    description: ['공통 질문을 통한 일관된 평가'],
+    buttonText: '공통 면접 진행하기',
+    path: '/interview/common'
+  },
+  {
+    id: 'integrated',
+    image: Intergrated,
+    alt: 'integrated',
+    description: '기술 면접 + 공통 면접',
+    buttonText: '통합 면접 진행하기',
+    path: '/interview/integrated'
+  }
+];
+
+
+const InterviewOption = ({ image, alt, description, buttonText, onSelect }) => (
+  <Option>
+    <img src={image} alt={alt} />
+    <OptionText>
+      {description}
+      <InterviewButton onClick={onSelect}>
+        {buttonText}
+      </InterviewButton>
+    </OptionText>
+  </Option>
+);
+
 const MockInterview = () => {
     const navigate = useNavigate();
 
@@ -136,50 +148,30 @@ const MockInterview = () => {
 
     return (
         <Container>
-        <Header>
-          <BackButton onClick={handleBackClick}>
-            <FaChevronLeft />
-          </BackButton>
-          <Title>모의 면접</Title>
-        </Header>
-        <QuestionContainer>
-            <Question>
-                <img src={QuestionIcon} alt="question_icon" />어떤 면접을<br/>진행하고 싶으신가요?
-            </Question>
-        </QuestionContainer>
-        <Contents>
-        <OptionTitle>[면접 형식 선택]</OptionTitle>
-        <OptionContainer>
-            <Option>
-                <img src={Technical} alt="technical" />
-                <Optiontext>
-                    전문 지식과 기술 능력평가
-                    <OptionBtn onClick={() => navigate('/interview/technical')}>
-                        기술 면접 진행하기
-                    </OptionBtn>
-                </Optiontext>
-            </Option>
-            <Option>
-                <img src={Common} alt="common" />
-                <Optiontext>
-                    공통 질문을 통한 일관된 평가
-                    <OptionBtn onClick={() => navigate('/interview/common')}>
-                        공통 면접 진행하기
-                    </OptionBtn>
-                </Optiontext>
-            </Option>
-            <Option>
-                <img src={Intergrated} alt="intergrated" />
-                <Optiontext>
-                    기술 면접 + 공통 면접
-                    <OptionBtn onClick={() => navigate('/interview/integrated')}>
-                        통합 면접 진행하기
-                    </OptionBtn>
-                </Optiontext>
-            </Option>
-        </OptionContainer>
-        </Contents>
-      </Container>
+            <Header title="모의 면접" onBackClick={handleBackClick}/>
+            <QuestionContainer>
+                <Question>
+                    <img src={QuestionIcon} alt="question_icon" />
+                    어떤 면접을<br/>
+                    진행하고 싶으신가요?
+                </Question>
+            </QuestionContainer>
+            <Contents>
+                <OptionTitle>[면접 형식 선택]</OptionTitle>
+                <OptionContainer>
+                    {interviewOptions.map((option) => (
+                        <InterviewOption
+                            key={option.id}
+                            image={option.image}
+                            alt={option.alt}
+                            description={option.description}
+                            buttonText={option.buttonText}
+                            onSelect={() => navigate(option.path)}
+                        />
+                    ))}
+                </OptionContainer>
+            </Contents>
+        </Container>
     );
 };
 
