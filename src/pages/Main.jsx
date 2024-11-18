@@ -4,6 +4,7 @@ import logo from "../img/logo.png";
 
 const Container = styled.div`
   display: flex;
+  width: 391px;
   height: 100%;
   flex-direction: column;
   align-items: center;
@@ -46,6 +47,11 @@ const StartButton = styled.button`
   font-weight: bold;
   margin-bottom: 30px; 
   cursor: pointer;
+
+  &:focus {
+    background-color: #3A00F9;
+    color: white;
+  }
 
   &:hover {
     background-color: #3A00F9;
@@ -94,7 +100,7 @@ const SectionTitle = styled.h2`
   text-align: center;
   width: 100%;
   max-width: 300px;
-  margin: 40px 0 15px;
+  margin: 40px 0 5px;
 `;
 
 const SectionSubtitle = styled.p`
@@ -102,7 +108,7 @@ const SectionSubtitle = styled.p`
   color: black;
   text-align: center;
   margin-top: 10px;
-  margin-bottom: 30px; /* 여유 공간 확보 */
+  margin-bottom: 30px; 
 `;
 
 const ActionButton = styled.button`
@@ -115,7 +121,7 @@ const ActionButton = styled.button`
   font-weight: bold;
   cursor: pointer;
   margin-top: 10px;
-  margin-bottom: 20px; /* 버튼 간 간격 추가 */
+  margin-bottom: 10px; /* 버튼 간 간격 추가 */
   width: 200px;
 
   &:hover {
@@ -129,30 +135,45 @@ const Main = () => {
   const handleArchiveClick = () => {
     navigate("/mypage");
   };
+  
+  const interviewClick = () => {
+    navigate("/interview");
+  };
+
+  const interviewQuestionClick = () => {
+    navigate("/interviewquestion");
+  };
+
+  const resumeClick = () => {
+    navigate("/mypage/resume");
+  };
+
+  const introductionClick = () => {
+    navigate("/mypage/introduction");
+  };
 
   return (
     <Container>
       <Logo src={logo} alt="Logo" />
       <Title>성공적인 면접을 위해 AI와 함께</Title>
       <Subtitle>미리 면접을 준비해보세요 !</Subtitle>
-      <StartButton>면접 시작하기</StartButton>
+      <StartButton onClick={interviewClick}>면접 시작하기</StartButton>
 
       <ArchiveTitle>면접 아카이브</ArchiveTitle>
       <ArchiveContainer>
         <ArchiveBox onClick={handleArchiveClick}>모의 면접 1<br />2024. 04. 24 생성</ArchiveBox>
         <ArchiveBox onClick={handleArchiveClick}>모의 면접 2<br />2024. 04. 25 생성</ArchiveBox>
         <ArchiveBox onClick={handleArchiveClick}>모의 면접 3<br />2024. 04. 26 생성</ArchiveBox>
-        {/* 필요한 만큼 ArchiveBox 추가 */}
       </ArchiveContainer>
 
       <SectionTitle>예상 질문 받아보기</SectionTitle>
       <SectionSubtitle>이력서 및 지원서를 기반한 AI가 추천해주는 <br/> 면접 예상 질문을 받아보세요</SectionSubtitle>
-      <ActionButton>면접 예상 질문</ActionButton>
+      <ActionButton onClick={interviewQuestionClick}>면접 예상 질문</ActionButton>
 
       <SectionTitle>나의 정보 입력하기</SectionTitle>
       <SectionSubtitle>이력서 및 지원서를 입력하고 <br/> AI 면접에 참여해보세요</SectionSubtitle>
-      <ActionButton>지원서 등록</ActionButton>
-      <ActionButton>이력서 등록</ActionButton>
+      <ActionButton onClick={resumeClick}>지원서 등록</ActionButton>
+      <ActionButton onClick={introductionClick}>이력서 등록</ActionButton>
     </Container>
   );
 };
