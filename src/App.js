@@ -32,7 +32,7 @@ function App() {
     <BrowserRouter>
       <GlobalStyle />
       <div className="app-container">
-        <Navbar/>
+        {/* <Navbar/> */}
       <Routes>
         {/* 로그인 전 메인화면 */}
         <Route path="/" element={<MainBeforeLogin />} />
