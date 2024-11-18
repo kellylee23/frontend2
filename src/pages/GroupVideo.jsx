@@ -59,12 +59,12 @@ const RecordContainer = styled.div`
   padding-top: 20px;
   gap: 15px;
 `
-const RecordStart = styled.div`
+const RecordButton = styled.div`
   width: 145px;
   height: 42px;
   border-radius: 30px;
-  background: #2F0BFF;
-  color: #FFF;
+  background: ${props => props.isRecording ? '#D9D9D9' : '#2F0BFF'};
+  color: ${props => props.isRecording ? '#3A00F9' : '#FFF'};
   font-family: "Noto Sans";
   font-size: 14px;
   font-weight: 600;
@@ -72,20 +72,12 @@ const RecordStart = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-`
-const RecordStop = styled.div`
-  width: 145px;
-  height: 42px;
-  border-radius: 30px;
-  background: #D9D9D9;
-  color: #3A00F9;
-  font-family: "Noto Sans";
-  font-size: 14px;
-  font-weight: 600;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    background: ${props => props.isRecording ? '#C9C9C9' : '#2900b3'};
+  }
 `
 
 const Question = styled.div`
@@ -106,7 +98,6 @@ const GroupVideo = () => {
     const [isRecording, setIsRecording] = useState(false);
     const [remainingQuestions, setRemainingQuestions] = useState(5);
     const [seconds, setSeconds] = useState(15 * 60);
-    const [timerActive, setTimerActive] = useState(false);
 
     const formatTime = (timeInSeconds) => {
       const minutes = Math.floor(timeInSeconds / 60);
@@ -115,23 +106,17 @@ const GroupVideo = () => {
   };
 
     const handleRecordClick = () => {
-      // 녹음 시작
-      if (!isRecording) {
-          setIsRecording(true);
-          setTimerActive(true);
-      } 
-      // 녹음 종료
-      else {
-          setIsRecording(false);
-          setTimerActive(false);
-          setRemainingQuestions(prev => Math.max(0, prev - 1));
-          
-          // 모든 질문이 끝났을 때 면접 종료 페이지로 이동
-          if (remainingQuestions <= 1) {
-              navigate('/interview-summary');
-          }
-      }
-  };
+      setIsRecording(!isRecording);
+      if (isRecording) {
+        setRemainingQuestions(prev => {
+            const newCount = prev - 1;
+            if (newCount <= 0) {
+                navigate('/interview-summary');
+            }
+            return newCount;
+        });
+    }
+};
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -146,6 +131,7 @@ const GroupVideo = () => {
     }, 1000);
     return () => clearInterval(timer);
   }, [navigate]);
+  
     return (
         <Container>
             <Header title={`진행 시간 ${formatTime(seconds)}`} onBackClick={handleBackClick}/>
@@ -156,8 +142,9 @@ const GroupVideo = () => {
                 <Ai><img src={UserIcon} alt="user" />면접자 3</Ai>
             </AiContainer>
             <RecordContainer>
-                <RecordStart>녹음 시작하기</RecordStart>
-                <RecordStop>녹음 완료하기</RecordStop>
+              <RecordButton isRecording={isRecording} onClick={handleRecordClick}>
+                {isRecording ? '녹음 완료하기' : '녹음 시작하기'}
+              </RecordButton>
             </RecordContainer>
             <Question>남은 질문 개수: {remainingQuestions}개</Question>
         </Contents>

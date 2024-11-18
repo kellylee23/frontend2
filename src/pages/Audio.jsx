@@ -1,6 +1,6 @@
 import React, { useEffect, useState }from "react";
 import styled from "styled-components";
-import { Container, Content} from "../components/PageLayout";
+import { Container} from "../components/PageLayout";
 import { Header } from "../components/Header";
 import { useNavigate } from "react-router-dom";
 import Play from "../img/Play.png"
@@ -55,8 +55,6 @@ const Audio = () => {
     const [isRecording, setIsRecording] = useState(false);
     const [remainingQuestions, setRemainingQuestions] = useState(5);
     const [seconds, setSeconds] = useState(15 * 60);
-    const [timerActive, setTimerActive] = useState(false);
-
 
     const formatTime = (timeInSeconds) => {
         const minutes = Math.floor(timeInSeconds / 60);
@@ -65,21 +63,15 @@ const Audio = () => {
     };
 
     const handleRecordClick = () => {
-        // 녹음 시작
-        if (!isRecording) {
-            setIsRecording(true);
-            setTimerActive(true);
-        } 
-        // 녹음 종료
-        else {
-            setIsRecording(false);
-            setTimerActive(false);
-            setRemainingQuestions(prev => Math.max(0, prev - 1));
-            
-            // 모든 질문이 끝났을 때 면접 종료 페이지로 이동
-            if (remainingQuestions <= 1) {
-                navigate('/interview-summary');
-            }
+        setIsRecording(!isRecording)
+        if (isRecording) {
+            setRemainingQuestions(prev => {
+                const newCount = prev - 1;
+                if (newCount <= 0) {
+                    navigate('/interview-summary');
+                }
+                return newCount;
+            });
         }
     };
 
