@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  /* align-items: center; */
   justify-content: center;
   padding: 20px;
   background-color: white;
@@ -25,6 +25,7 @@ const Title =styled.div`
   font-style: normal;
   font-weight: 600;
   font-size: 32px;
+  /* text-align: left; */
   color: #000000;
 `;
 
@@ -56,7 +57,7 @@ const Profile = styled.div`
 `;
 
 const Box1div = styled.div`
-  width: 300px;
+  width: 330px;
   height: 122px;
   margin-bottom: 45px;
 `;
