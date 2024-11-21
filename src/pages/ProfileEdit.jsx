@@ -14,6 +14,7 @@ const Title =styled.div`
   font-weight: 600;
   font-size: 32px;
   color: #000000;
+  
   text-align: center;
 `;
 
