@@ -3,6 +3,15 @@ import styled from "styled-components";
 import { Icon } from '@iconify/react';
 import { useNavigate } from 'react-router-dom';
 
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  justify-content: center;
+  padding: 20px;
+  background-color: white;
+`;
+
 const StyledIcon = styled(Icon)`
   width:55px;
   height: 55px;
@@ -10,12 +19,13 @@ const StyledIcon = styled(Icon)`
 `;
 
 const Title =styled.div`
-  margin-left: 22px;
+  /* margin-left: 22px; */
   margin-top: 82px;
   font-family: 'Noto Sans';
   font-style: normal;
   font-weight: 600;
   font-size: 32px;
+  /* text-align: left; */
   color: #000000;
 `;
 
@@ -30,7 +40,7 @@ const ProfileIcon= styled.div`
   justify-content: center;
   width: 66px;
   height: 66px;
-  margin-left: 27px;
+  /* margin-left: 27px; */
   margin-top: 28px;
   background: #3A00F9;
   border-radius: 100px;
@@ -47,7 +57,7 @@ const Profile = styled.div`
 `;
 
 const Box1div = styled.div`
-  width: 352px;
+  width: 330px;
   height: 122px;
   margin-bottom: 45px;
 `;
@@ -57,7 +67,7 @@ const Box1 = styled.div`
   box-sizing: border-box;
   width: auto;
   height: 93px;
-  margin-left: 25px;
+  /* margin-left: 25px; */
   margin-top: 60px;
   border: 1px solid #000000;
   border-radius: 10px;
@@ -95,8 +105,8 @@ const Box2 = styled.div`
   width: 330px;
   height: 64px;
   margin-top: 45px;
-  margin-left: 25px;
-  margin-right: 25px;
+  /* margin-left: 25px; */
+  /* margin-right: 25px; */
   border: 1px solid #000000;
   border-radius: 10px;
   position: relative;
@@ -128,8 +138,8 @@ const Box3 = styled.div`
   width: 330px;
   height: 206px;
   margin-top: 52px;
-  margin-left: 25px;
-  margin-right: 25px;
+  /* margin-left: 25px; */
+  /* margin-right: 25px; */
   border: 1px solid #000000;
   border-radius: 10px;
   position: relative;
@@ -162,7 +172,7 @@ const Maindiv = styled.div`
   border: 1px solid #000000;
   border-radius: 10px;
   position: relative;
-  margin-left: 25px;
+  /* margin-left: 25px; */
   margin-top: 75px;
   margin-bottom: 100px;
 `;
@@ -309,6 +319,7 @@ const Mypage = () => {
 
   return (
     <>
+    <Container>
     <Title>마이페이지</Title>
     <Profilediv>
     <ProfileIcon>
@@ -364,6 +375,7 @@ const Mypage = () => {
       </Box4_3>
     </Box4div>
     </Maindiv>
+    </Container>
     </>
   );
 }

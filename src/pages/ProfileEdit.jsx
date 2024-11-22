@@ -14,6 +14,7 @@ const Title =styled.div`
   font-weight: 600;
   font-size: 32px;
   color: #000000;
+  
   text-align: center;
 `;
 
@@ -67,7 +68,7 @@ const UploadButton = styled.button`
   height: 25px;
 
   &:hover {
-    background-color:#3A00F9;
+    background-color: #3A00F9;
   }
 `;
 
@@ -89,7 +90,6 @@ const InputRow = styled.div`
   border-bottom: 1px solid #d9d9d9;
   margin-left: 20px;
   margin-right: 20px;
-  color: #d9d9d9;
 
   &:hover {
     border-bottom: 1px solid #3A00F9;
