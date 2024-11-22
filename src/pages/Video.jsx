@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Container } from "../components/PageLayout";
 import { Header } from "../components/Header";
 import { useNavigate } from "react-router-dom";
+import { useRef } from "react";
 
 const Contents = styled.div`
   width: 100%;
@@ -70,6 +71,10 @@ const Video = () => {
     const [remainingQuestions, setRemainingQuestions] = useState(5);
     const [seconds, setSeconds] = useState(15 * 60);
 
+    const[recorder, setRecoder] = useState(null);
+    const[recordedChunk, setRecodedChunk] = useState([]);
+    const videoRef = useRef(null);
+
     const handleBackClick = () => {
         navigate(-1);
     };
@@ -80,10 +85,50 @@ const Video = () => {
         return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
     };
 
+    const startRecording = async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: true,
+                audio: true,
+            });
+            videoRef.current.srcObject = stream;
+            
+            const newRecorder = new MediaRecorder(stream);
+
+            newRecorder.ondataavailable = (event) => {
+                setRecodedChunk((prev) => [...prev, event.data]);
+            };
+
+            newRecorder.onstop =()=> {
+                stream.getTracks().forEach((track) => track.stop());
+            };
+
+            newRecorder.start();
+            setRecoder(newRecorder);
+        } catch (error) {
+            console.error("error!:", error);
+        }
+    };
+
+    const stopRecordingAndSave = () => {
+        if (recorder) {
+            recorder.stop();
+            const recordedBlob = new Blob(recordedChunk, { type: "video/webm" });
+            const url = URL.createObjectURL(recordedBlob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = "interview-recording.webm";
+            link.click();
+        }
+    };
     const handleRecordClick = () => {
-        setIsRecording(!isRecording);
-        
-        if (isRecording) {
+        if (!isRecording) {
+            setRecodedChunk([]);  // 녹음 시작 전에 청크 초기화
+            startRecording();
+        } else {
+            stopRecordingAndSave(); // 녹음이 완료되면 저장
+    
+            // 녹음이 완료된 후에만 질문 개수 감소
             setRemainingQuestions(prev => {
                 const newCount = prev - 1;
                 if (newCount <= 0) {
@@ -92,8 +137,12 @@ const Video = () => {
                 return newCount;
             });
         }
+    
+        // 녹음 상태 토글
+        setIsRecording(!isRecording);
     };
-
+    
+    
     useEffect(() => {
         const timer = setInterval(() => {
             setSeconds(prev => {
@@ -113,7 +162,7 @@ const Video = () => {
         <Container>
             <Header title={`진행 시간 ${formatTime(seconds)}`} onBackClick={handleBackClick}/>
             <Contents>
-                <User>유저 화면</User>
+                <User><video ref={videoRef} autoPlay muted style={{ width: "100%", height: "100%", objectFit: "cover"}} />유저 화면</User>
                 <RecordContainer>
                     <RecordButton isRecording={isRecording} onClick={handleRecordClick}>
                         {isRecording ? '녹음 완료하기' : '녹음 시작하기'}
