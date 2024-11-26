@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import logo from "../img/logo.png";
 import PasswordInput from "../components/login/PasswordInput";
 import IdInputDiv from "../components/signin/IdInputDiv";
-import axiosInstance from "../APIs/AxiosInstance";
+import axios from "axios";
 
 const SignIn = () => {
     const [firstPassword, setFirstPassword] = useState("");
@@ -13,9 +13,9 @@ const SignIn = () => {
     const [name, setName] = useState("");
     const isNameValid = name.trim().length > 0;
 
-    const [id, setId] = useState();
+    const [id, setId] = useState(); //아이디 확인
+    const [issame, setIsSame] = useState(false); //비밀번호 일치상태 확인
     const [isCanSignin, setIsCanSignin] = useState(false);
-
     const [error,setError] = useState("");
 
     const navigate = useNavigate();
@@ -23,42 +23,58 @@ const SignIn = () => {
     const goToLogin = () => {
     navigate("/login");
     };
+  
+    useEffect(() => {
+      // secondPassword가 입력될 때만 비밀번호 일치 여부를 확인
+      if (secondPassword) {
+        if (firstPassword === secondPassword) {
+          setIsSame(true);
+          setError(""); // 에러 메시지 초기화
+        } else {
+          setIsSame(false);
+          setError("비밀번호가 일치하지 않습니다."); 
+        }
+      } else {
+        setIsSame(false);
+        setError(""); // secondPassword가 비어있으면 에러 초기화
+      }
+    }, [secondPassword, firstPassword]);
 
-    const handleSignup = async () => {
-      if (firstPassword !== secondPassword) {
-        setError("비밀번호가 일치하지 않습니다.");
-        return;
-      }
-      if (!isNameValid) {
-        setError("이름을 입력해주세요.");
-        return;
-      }
-      if (!isCanSignin) {
-        setError("아이디 중복확인이 필요합니다.");
-        return;
-      }
+  
+
+
+  const handleSignup = async () => {
+    if (!isCanSignin || !isNameValid || !issame) return;
+
+      const requestData = {
+        email: id,
+        name: name,
+        password: firstPassword,
+      };
+
+      console.log("Request Data:", requestData);
+
 
     try {
-      const response = await axiosInstance.post('/api/user/signup', {
-          email: id, 
-          name: name,
-          password: firstPassword,
-          gender: "" 
-      });
+      const response = await axios.post(
+        `${process.env.REACT_APP_SERVER}/api/user/signup`,
+        requestData,
+        {
+          headers: {
+            "Content-Type": "application/json"
+          },
+        }
+      );
       if (response.status === 200 || response.status === 201) {
+        console.log("Reponse", response);
         alert("회원가입이 완료되었습니다.");
         navigate("/login");
-    }} catch (error) {
-    if (error.response) {
-        setError(error.response.data.message || "회원가입 중 오류가 발생했습니다.");
-    } else {
-        setError("서버와의 연결이 원활하지 않습니다.");
+      }
+    } catch (error) {
+      console.error("Error response:", error.response);
+      setError("회원가입에 실패했습니다. 다시 시도해주세요.");
     }
-    console.error("회원가입 에러:", error);
-}
-    
-      
-    }
+};
     return (
     <Container>
       <TopSection>
@@ -74,7 +90,7 @@ const SignIn = () => {
         />
         
        <IdInputDiv
-        placeholder= {"아이디"}
+        placeholder= "아이디"
         setIsCanSignin={setIsCanSignin}
         setId={setId}
         >
@@ -89,9 +105,15 @@ const SignIn = () => {
             placeholder="비밀번호 확인"
             setPassword={setSecondPassword}
         />
-      </SigninWrapper>
+        </SigninWrapper>
+              {error && <ErrorMessage>{error}</ErrorMessage>} 
       
-    <SignupButton disabled={!isCanSignin || !isNameValid } onClick={handleSignup}>회원가입</SignupButton>
+        <SignupButton
+          disabled={!isCanSignin || !isNameValid || !issame}
+          onClick={handleSignup}
+        >
+          회원가입
+        </SignupButton>
       
     <LoginText>
         이미 계정이 있으신가요? <LoginLink onClick={goToLogin}>로그인</LoginLink>
@@ -168,6 +190,12 @@ const SignupButton = styled.button`
   &:hover {
     background-color: ${({ disabled }) => (disabled ? "lightgray" : "#2A00F9")};
   }
+`;
+
+const ErrorMessage = styled.p`
+  color: red;
+  font-size: 0.9rem;
+  margin: 10px 0;
 `;
 
 
