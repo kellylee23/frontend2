@@ -165,7 +165,6 @@ const Video = () => {
       />
       <Contents>
         <User>
-          유저 화면
           <video
             ref={videoRef}
             autoPlay
