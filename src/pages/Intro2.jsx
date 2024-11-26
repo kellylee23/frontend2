@@ -85,7 +85,7 @@ const LeftArrowButton = styled.button`
     font-size: 2 rem;
     color: #333;
 
-    &: hover {
+    &:hover {
         color:#000;
     }
 `;
