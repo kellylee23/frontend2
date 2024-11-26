@@ -7,7 +7,7 @@ import PasswordInput from "../components/login/PasswordInput";
 import axiosInstance from "../APIs/AxiosInstance";
 
 const LogIn = () => {
-    const [id, setId] = useState();
+    const [id, setId] = useState("");
     const [password, setPassword] = useState();
 
     const navigate = useNavigate();
@@ -21,21 +21,40 @@ const LogIn = () => {
     };
 
     const handleLogin = async () => {
+      if (!id || !password) {
+          alert("아이디와 비밀번호를 모두 입력해주세요.");
+          return;
+      }
+  
+      const loginData = {
+          email: id.trim(),
+          password: password
+      };
+  
       try {
-          const response = await axiosInstance.post('/api/user/login', {
-              email: id,
-              password: password
-          });
+          const response = await axiosInstance.post('/api/user/login', loginData);
+          console.log("로그인 응답:", response);
+          console.log("응답 헤더:", response.headers);
+  
+          // headers.get() 대신 직접 접근
+          const token = response.headers['authorization'] || 
+                       response.headers['Authorization'];
           
-          const token = response.headers['authorization'];
+          console.log("토큰:", token);
+  
           if (token) {
-              sessionStorage.setItem('accessToken', token);
+              // Bearer 뒤의 공백도 포함해서 제거
+              const accessToken = token.replace('Bearer ', '');
+              sessionStorage.setItem('accessToken', accessToken);
               alert("로그인 성공");
-              navigate('/');
+              navigate('/main');
+          } else {
+              console.log("토큰이 없습니다. 전체 응답:", response);
+              alert("로그인은 성공했으나 토큰을 받지 못했습니다.");
           }
       } catch (error) {
           console.error('Login error:', error);
-          alert('로그인 실패');
+          alert(error.response?.data?.message || '로그인 실패');
       }
   };
     return (
