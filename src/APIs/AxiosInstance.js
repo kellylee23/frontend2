@@ -9,11 +9,20 @@ const axiosInstance = axios.create({
     }
 });
 
+// 토큰이 필요없는 API 경로들
+const publicPaths = [
+    '/api/user/signup',  // 회원가입
+    '/api/user/login'    // 로그인
+];
+
 axiosInstance.interceptors.request.use(
     config => {
-        const accessToken = sessionStorage.getItem('accessToken');
-        if (accessToken) {
-            config.headers['Authorization'] = `Bearer ${accessToken}`;
+        // 회원가입, 로그인이 아닌 경우에만 토큰 추가
+        if (!publicPaths.includes(config.url)) {
+            const accessToken = sessionStorage.getItem('accessToken');
+            if (accessToken) {
+                config.headers['Authorization'] = `bearer ${accessToken}`;
+            }
         }
         return config;
     },

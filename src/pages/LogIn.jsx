@@ -20,7 +20,24 @@ const LogIn = () => {
         setId(event.target.value);
     };
 
-
+    const handleLogin = async () => {
+      try {
+          const response = await axiosInstance.post('/api/user/login', {
+              email: id,
+              password: password
+          });
+          
+          const token = response.headers['authorization'];
+          if (token) {
+              sessionStorage.setItem('accessToken', token);
+              alert("로그인 성공");
+              navigate('/');
+          }
+      } catch (error) {
+          console.error('Login error:', error);
+          alert('로그인 실패');
+      }
+  };
     return (
         <Container>
             <Logo src={logo} alt="Logo" />

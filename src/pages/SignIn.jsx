@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import logo from "../img/logo.png";
 import PasswordInput from "../components/login/PasswordInput";
 import IdInputDiv from "../components/signin/IdInputDiv";
+import axiosInstance from "../APIs/AxiosInstance";
 
 const SignIn = () => {
     const [firstPassword, setFirstPassword] = useState("");
@@ -15,6 +16,7 @@ const SignIn = () => {
     const [id, setId] = useState();
     const [isCanSignin, setIsCanSignin] = useState(false);
 
+    const [error,setError] = useState("");
 
     const navigate = useNavigate();
     
@@ -22,6 +24,41 @@ const SignIn = () => {
     navigate("/login");
     };
 
+    const handleSignup = async () => {
+      if (firstPassword !== secondPassword) {
+        setError("비밀번호가 일치하지 않습니다.");
+        return;
+      }
+      if (!isNameValid) {
+        setError("이름을 입력해주세요.");
+        return;
+      }
+      if (!isCanSignin) {
+        setError("아이디 중복확인이 필요합니다.");
+        return;
+      }
+
+    try {
+      const response = await axiosInstance.post('/api/user/signup', {
+          email: id, 
+          name: name,
+          password: firstPassword,
+          gender: "" 
+      });
+      if (response.status === 200 || response.status === 201) {
+        alert("회원가입이 완료되었습니다.");
+        navigate("/login");
+    }} catch (error) {
+    if (error.response) {
+        setError(error.response.data.message || "회원가입 중 오류가 발생했습니다.");
+    } else {
+        setError("서버와의 연결이 원활하지 않습니다.");
+    }
+    console.error("회원가입 에러:", error);
+}
+    
+      
+    }
     return (
     <Container>
       <TopSection>
@@ -43,7 +80,6 @@ const SignIn = () => {
         >
           중복확인      
       </IdInputDiv>
-      
 
         <PasswordInput
             placeholder="비밀번호"
@@ -55,7 +91,7 @@ const SignIn = () => {
         />
       </SigninWrapper>
       
-    <SignupButton disabled={!isCanSignin && !isNameValid }>회원가입</SignupButton>
+    <SignupButton disabled={!isCanSignin || !isNameValid } onClick={handleSignup}>회원가입</SignupButton>
       
     <LoginText>
         이미 계정이 있으신가요? <LoginLink onClick={goToLogin}>로그인</LoginLink>
