@@ -318,7 +318,7 @@ const Mypage = () => {
   };
 
   if (isLoading) {
-    return <div>로딩 중...</div>; // 로딩 상태 표시
+    return <div>로딩 중...</div>;
   }
 
   return (
