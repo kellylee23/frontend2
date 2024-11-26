@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
+import axios from "axios";
 
 const IdInputDiv = ({
     placeholder,
@@ -10,7 +11,7 @@ const IdInputDiv = ({
     const [inputValue, setInputValue] = useState("");
     const [isbuttonenabled, setIsButtonEnabled] = useState(false);
     const [showError, setShowError] = useState(false);
-    const [isSubmitClicked, setIsSubmitClicked] = useState(false); 
+    const [isFocused, setIsFocused] = useState(false);
 
   // 유효성 검사 로직
   const validateInput = (value) => {
@@ -24,35 +25,59 @@ const IdInputDiv = ({
   useEffect(() => {
     const isValid = validateInput(inputValue);
     setIsButtonEnabled(isValid);
-      setShowError(!isValid);
-    if (isSubmitClicked) setShowError(!isValid); // 버튼을 클릭한 이후에만 에러 메시지 표시
-  }, [inputValue, isSubmitClicked]);
+    setShowError(!isValid); 
+  }, [inputValue]);
 
-    useEffect(() => {
-        if (isbuttonenabled) {
-            setIsCanSignin(true);
-        } else {
-            setIsCanSignin(false);
-        }
-    }, [isbuttonenabled, setIsCanSignin]);
+  useEffect(() => {
+        setIsCanSignin(isbuttonenabled && !showError);
+    }, [isbuttonenabled, showError, setIsCanSignin]);
 
-    const handleInputChange = (e) => {
+  const handleInputChange = (e) => {
         setInputValue(e.target.value);
     };
+      
+  const handleFocus = () => {
+        setIsFocused(true); 
+    };
 
-    const handlesubmit = () => {
-        setIsSubmitClicked(true); // 중복확인 버튼이 눌렸음을 기록
+  const handleBlur = () => {
+        setIsFocused(false); 
+    };
 
-    const isValid = validateInput(inputValue);
+  const handlesubmit = async () => {
+    try {
+      const response = await axios.get(
+      `${process.env.REACT_APP_SERVER}/api/user/email-check`,
+        {
+          params: { email: inputValue }, 
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+
+      console.log("서버 응답값:", response.data);
+      console.log("서버 전체 응답:", response);
+
+      const isIdAvailable = response.data === false; //중복이 없다는 뜻 => 아이디 생성 가능 !
         
-    if (isValid) {
-      alert("사용 가능한 아이디입니다.");
+    if (isIdAvailable && validateInput(inputValue)) {
       setId(inputValue);
       setShowError(false); // 에러 메시지 숨김
+      alert("사용 가능한 아이디입니다.");
     } else {
       setShowError(true); // 유효하지 않은 경우 에러 메시지 표시
+      setIsCanSignin(false);
     }
-  };
+  } catch (error) {
+    console.error("Error during email check:", error);
+    alert("서버와 통신 중 문제가 발생했습니다. 다시 시도해주세요.");
+    }
+    
+};
 
     
     return (
@@ -62,7 +87,9 @@ const IdInputDiv = ({
             placeholder={placeholder}
             value={inputValue}
             onChange = {handleInputChange}
-        />
+            onFocus={handleFocus} 
+            onBlur={handleBlur} 
+          />
          <IdentifyButton
           disabled={!isbuttonenabled}
           isbuttonenabled={isbuttonenabled}
@@ -72,9 +99,13 @@ const IdInputDiv = ({
         </IdentifyButton>
         
         </Wrapper>
-      {isSubmitClicked && showError && (
+      {isFocused && showError && (
         <ErrorText>대소문자 및 숫자를 포함해서 입력해주세요.</ErrorText>
       )}
+    
+        {!showError && (
+          <SuccessText>사용 가능한 아이디입니다!</SuccessText>
+        )}
 
         </>
             );
@@ -108,15 +139,16 @@ const IdentifyButton = styled.button`
   width: 90px;
   height: 41px;
   margin-left: 10px;
-  background-color: #3A00F9;
+  background-color: ${({ disabled }) => (disabled ? "lightgray" : "#3A00F9")};
   color: white;
   border: none;
   border-radius: 10px;
   font-size: 0.9rem;
   font-weight: bold;
+  cursor: ${({ disabled }) => (disabled ? "default" : "pointer")};
 
   &:hover {
-    background-color: #2A00F9;
+    background-color: ${({ disabled }) => (disabled ? "lightgray" : "#2A00F9")};
   }
 `;
 
@@ -125,4 +157,11 @@ const ErrorText = styled.p`
   font-size: 0.7rem;
   margin-bottom: 1.5rem;
   margin-left: 0.5rem;
+`;
+
+const SuccessText = styled.p`
+    color: green;
+    font-size: 0.7rem;
+    margin-bottom: 1.5rem;
+    margin-left: 0.5rem;
 `;
