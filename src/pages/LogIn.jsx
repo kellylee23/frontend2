@@ -4,6 +4,7 @@ import logo from "../img/logo.png";
 import { useState } from "react";
 import InputDiv from "../components/login/InputDiv";
 import PasswordInput from "../components/login/PasswordInput";
+import axiosInstance from "../APIs/AxiosInstance";
 
 const LogIn = () => {
     const [id, setId] = useState();
@@ -19,9 +20,6 @@ const LogIn = () => {
         setId(event.target.value);
     };
 
-    const handleLogin = () => {
-        alert("로그인 성공")
-    };
 
     return (
         <Container>
