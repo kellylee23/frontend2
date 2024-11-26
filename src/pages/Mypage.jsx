@@ -276,6 +276,7 @@ const Mypage = () => {
   const accessToken = localStorage.getItem("accessToken");
   const [user, setUser] = useState({ name: "", email: "" });
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState();
 
   useEffect(() => {
     const fetchUserData = async () => {
