@@ -25,10 +25,12 @@ import Resume from "./pages/Resume";
 import Introduction from "./pages/Introduction";
 import Archive from "./pages/Archive";
 import ProfileEdit from "./pages/ProfileEdit";
+import { AuthProvider } from "./AuthContext";
 
 
 function App() {
   return (
+    <AuthProvider>
     <BrowserRouter>
       <GlobalStyle />
       <div className="app-container">
@@ -82,7 +84,8 @@ function App() {
 
           </Routes>
       </div>
-    </BrowserRouter>
+      </BrowserRouter>
+      </AuthProvider>
   );
 }
 
